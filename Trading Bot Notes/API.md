@@ -17,6 +17,8 @@
 - EVEN HAS OPTIONS DATA (live has a premium, but historical data is free)
 - Has SMA query, if rate limits aren't bad, this is magic
 - Also has bollinger bands
+- Data needs to be pulled in 30min intervals and then use the open of (a) and close of (b) to generate an hourly candle.
+- Has extended hours data
 
 ## Stock Tickers
 - Found a list of all stock tickers on NYSE
