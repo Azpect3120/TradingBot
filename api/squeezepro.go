@@ -1,12 +1,14 @@
 package api
 
+import "strings"
+
 type SqueezePro struct {
-	Length     int // Default: 14
-	Thresholds Thresholds
-	// ReversalLength int // Default: 5  Not used yet
+	Length          int        // Default: 14
+	Thresholds      Thresholds // ReversalLength int // Default: 5  Not used yet
 	BollingerBands  *BollingerBands
 	KeltnerChannels *KeltnerChannels
-	Squeeze         Squeeze // Stores a single value for now
+	Squeeze         []Squeeze
+	SqueezeCount    int // Count 15
 }
 
 type Thresholds struct {
@@ -41,6 +43,8 @@ func NewSqueezePro() *SqueezePro {
 		},
 		BollingerBands:  NewBollingerBands(),
 		KeltnerChannels: NewKeltnerChannels(),
+		SqueezeCount:    15,
+		Squeeze:         make([]Squeeze, 15),
 	}
 }
 
@@ -51,47 +55,77 @@ func NewSqueezePro() *SqueezePro {
 // KeltnerChannels structures are also calculated for use
 // in the squeeze pro calculation.
 func (sqz *SqueezePro) Calculate(bars []Bar) {
-	// Calculate the BB values
-	sqz.BollingerBands.Calculate(bars)
+	// N is based on the SqueezeCount value
+	for n := 0; n < sqz.SqueezeCount; n++ {
+		if n != 0 {
+			bars = bars[:len(bars)-1]
+		}
 
-	// Calculate very narrow squeeze
-	sqz.KeltnerChannels.Multipler = sqz.Thresholds.VeryNarrow
-	sqz.KeltnerChannels.Calculate(bars)
-	if (sqz.BollingerBands.Lower >= sqz.KeltnerChannels.Lower) && (sqz.BollingerBands.Upper <= sqz.KeltnerChannels.Upper) {
-		sqz.Squeeze = SqueezeVeryNarrow
-		return
+		// Calculate the BB values
+		sqz.BollingerBands.Calculate(bars)
+
+		// Calculate very narrow squeeze
+		sqz.KeltnerChannels.Multipler = sqz.Thresholds.VeryNarrow
+		sqz.KeltnerChannels.Calculate(bars)
+		if (sqz.BollingerBands.Lower >= sqz.KeltnerChannels.Lower) && (sqz.BollingerBands.Upper <= sqz.KeltnerChannels.Upper) {
+			sqz.Squeeze[n] = SqueezeVeryNarrow
+			continue
+		}
+
+		// Calculate narrow squeeze
+		sqz.KeltnerChannels.Multipler = sqz.Thresholds.Narrow
+		sqz.KeltnerChannels.Calculate(bars)
+		if (sqz.BollingerBands.Lower >= sqz.KeltnerChannels.Lower) && (sqz.BollingerBands.Upper <= sqz.KeltnerChannels.Upper) {
+			sqz.Squeeze[n] = SqueezeNarrow
+			continue
+		}
+
+		// Calculate normal squeeze
+		sqz.KeltnerChannels.Multipler = sqz.Thresholds.Normal
+		sqz.KeltnerChannels.Calculate(bars)
+		if (sqz.BollingerBands.Lower >= sqz.KeltnerChannels.Lower) && (sqz.BollingerBands.Upper <= sqz.KeltnerChannels.Upper) {
+			sqz.Squeeze[n] = SqueezeNormal
+			continue
+		}
+
+		// Calculate wide squeeze
+		sqz.KeltnerChannels.Multipler = sqz.Thresholds.Wide
+		sqz.KeltnerChannels.Calculate(bars)
+		if (sqz.BollingerBands.Lower >= sqz.KeltnerChannels.Lower) && (sqz.BollingerBands.Upper <= sqz.KeltnerChannels.Upper) {
+			sqz.Squeeze[n] = SqueezeWide
+			continue
+		}
+
+		// No Squeeze
+		sqz.Squeeze[n] = SqueezeNone
 	}
-
-	// Calculate narrow squeeze
-	sqz.KeltnerChannels.Multipler = sqz.Thresholds.Narrow
-	sqz.KeltnerChannels.Calculate(bars)
-	if (sqz.BollingerBands.Lower >= sqz.KeltnerChannels.Lower) && (sqz.BollingerBands.Upper <= sqz.KeltnerChannels.Upper) {
-		sqz.Squeeze = SqueezeNarrow
-		return
-	}
-
-	// Calculate normal squeeze
-	sqz.KeltnerChannels.Multipler = sqz.Thresholds.Normal
-	sqz.KeltnerChannels.Calculate(bars)
-	if (sqz.BollingerBands.Lower >= sqz.KeltnerChannels.Lower) && (sqz.BollingerBands.Upper <= sqz.KeltnerChannels.Upper) {
-		sqz.Squeeze = SqueezeNormal
-		return
-	}
-
-	// Calculate wide squeeze
-	sqz.KeltnerChannels.Multipler = sqz.Thresholds.Wide
-	sqz.KeltnerChannels.Calculate(bars)
-	if (sqz.BollingerBands.Lower >= sqz.KeltnerChannels.Lower) && (sqz.BollingerBands.Upper <= sqz.KeltnerChannels.Upper) {
-		sqz.Squeeze = SqueezeWide
-		return
-	}
-
-	// No Squeeze
-	sqz.Squeeze = SqueezeNone
 }
 
 // Return the string representation of the SqueezePro data.
-// The string is the Squeeze value from the enum.
+// The string is the Squeeze value from the enum. Only displays
+// the first value in the array. The first value is the most
+// recent squeeze value.
 func (sqz *SqueezePro) String() string {
-	return string(sqz.Squeeze)
+	var result []string
+	for _, s := range sqz.Squeeze {
+		switch s {
+		case SqueezeVeryNarrow:
+			result = append(result, "Very Narrow (blue)")
+		case SqueezeNarrow:
+			result = append(result, "Narrow (yellow)")
+		case SqueezeNormal:
+			result = append(result, "Normal (red)")
+		case SqueezeWide:
+			result = append(result, "Wide (orange)")
+		case SqueezeNone:
+			result = append(result, "None (green)")
+		}
+	}
+
+	return strings.Join(result, ",  ")
+}
+
+func (sqz *SqueezePro) SetSqueezeCount(n int) {
+	sqz.SqueezeCount = n
+	sqz.Squeeze = make([]Squeeze, n)
 }

@@ -14,7 +14,7 @@ func main() {
 	start := end.Add(-500 * time.Hour)
 
 	params := &chart.Params{
-		Symbol:     "SPY",
+		Symbol:     "SU",
 		Interval:   datetime.OneHour,
 		IncludeExt: false,
 		Start:      datetime.New(&start),
@@ -51,20 +51,7 @@ func main() {
 	// 	fmt.Printf("[%d] %s\n", I, bar.Timestamp.Format("2006-01-02 15:04:05"))
 	// }
 
-	bb := api.NewBollingerBands()
-	bb.Calculate(bars)
-
-	kc := api.NewKeltnerChannels()
-	kc.Multipler = 1.8
-	kc.Calculate(bars)
-	println(kc.StringFixed(2) + "\n")
-	kc.Multipler = 1.25
-	kc.Calculate(bars)
-	println(kc.StringFixed(2) + "\n")
-	kc.Multipler = 0.9
-	kc.Calculate(bars)
-	println(kc.StringFixed(2) + "\n")
-	kc.Multipler = 0.75
-	kc.Calculate(bars)
-	println(kc.StringFixed(2) + "\n")
+	sqz := api.NewSqueezePro()
+	sqz.Calculate(bars)
+	print(sqz.String())
 }
