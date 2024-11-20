@@ -1,31 +1,70 @@
 package main
 
 import (
-	"bufio"
-	"os"
-	"strings"
+	"fmt"
+	"time"
 
-	"github.com/Azpect3120/TradingBot/internal/util"
+	"github.com/Azpect3120/TradingBot/api"
+	"github.com/piquette/finance-go/chart"
+	"github.com/piquette/finance-go/datetime"
 )
 
 func main() {
-	util.GetTickerChart("AAPL")
-}
+	end := time.Now()
+	start := end.Add(-500 * time.Hour)
 
-// Deprecated
-func get_tickers() []string {
-	f, err := os.Open("./data/nasdaq_names.txt")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	var tickers []string
-
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		tickers = append(tickers, strings.TrimSpace(scanner.Text()))
+	params := &chart.Params{
+		Symbol:     "SPY",
+		Interval:   datetime.OneHour,
+		IncludeExt: false,
+		Start:      datetime.New(&start),
+		End:        datetime.New(&end),
 	}
 
-	return tickers
+	ch := chart.Get(params)
+
+	var bars []api.Bar
+	for ch.Next() {
+		high, _ := ch.Bar().High.Float64()
+		low, _ := ch.Bar().Low.Float64()
+		open, _ := ch.Bar().Open.Float64()
+		close_, _ := ch.Bar().Close.Float64()
+
+		bar := api.Bar{
+			High:      high,
+			Low:       low,
+			Open:      open,
+			Close:     close_,
+			Volume:    int64(ch.Bar().Volume),
+			Timestamp: time.Unix(int64(ch.Bar().Timestamp), 0).UTC().Local(),
+		}
+		bars = append(bars, bar)
+	}
+	if err := ch.Err(); err != nil {
+		fmt.Println(err)
+	}
+
+	// Remove the last bar because its fucked up
+	bars = bars[:len(bars)-1]
+
+	// for I, bar := range bars {
+	// 	fmt.Printf("[%d] %s\n", I, bar.Timestamp.Format("2006-01-02 15:04:05"))
+	// }
+
+	bb := api.NewBollingerBands()
+	bb.Calculate(bars)
+
+	kc := api.NewKeltnerChannels()
+	kc.Multipler = 1.8
+	kc.Calculate(bars)
+	println(kc.StringFixed(2) + "\n")
+	kc.Multipler = 1.25
+	kc.Calculate(bars)
+	println(kc.StringFixed(2) + "\n")
+	kc.Multipler = 0.9
+	kc.Calculate(bars)
+	println(kc.StringFixed(2) + "\n")
+	kc.Multipler = 0.75
+	kc.Calculate(bars)
+	println(kc.StringFixed(2) + "\n")
 }
