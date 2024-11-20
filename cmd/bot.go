@@ -1,7 +1,7 @@
 package main
 
 import (
-	"strings"
+	"fmt"
 
 	"github.com/Azpect3120/TradingBot/api"
 	"github.com/Azpect3120/TradingBot/internal/util"
@@ -13,7 +13,13 @@ func main() {
 		panic(err)
 	}
 
-	println(strings.Join(rows, ", "))
+	for _, row := range rows[:5] {
+		bars, err := util.GetBars(row, 500)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%s: %s\n", row, api.CalculateRating(row, bars))
+	}
 
 }
 
@@ -33,7 +39,7 @@ func test() {
 		println(bar.StringFixed(2))
 	}
 
-	sqz := api.NewSqueezePro()
+	sqz := api.NewSqueezePro(15)
 	sqz.Calculate(bars)
 	print(sqz.String())
 

@@ -3,12 +3,12 @@ package api
 import "strings"
 
 type SqueezePro struct {
-	Length          int        // Default: 14
-	Thresholds      Thresholds // ReversalLength int // Default: 5  Not used yet
+	Length          int // Default: 14
+	Thresholds      Thresholds
 	BollingerBands  *BollingerBands
 	KeltnerChannels *KeltnerChannels
 	Squeeze         []Squeeze
-	SqueezeCount    int // Count 15
+	SqueezeCount    int
 }
 
 type Thresholds struct {
@@ -32,7 +32,7 @@ const (
 // Values are set to default values, but can be changed by
 // the caller. The BollingerBands and KeltnerChannels
 // structures are also created with default values.
-func NewSqueezePro() *SqueezePro {
+func NewSqueezePro(size int) *SqueezePro {
 	return &SqueezePro{
 		Length: 14,
 		Thresholds: Thresholds{
@@ -43,8 +43,8 @@ func NewSqueezePro() *SqueezePro {
 		},
 		BollingerBands:  NewBollingerBands(),
 		KeltnerChannels: NewKeltnerChannels(),
-		SqueezeCount:    15,
-		Squeeze:         make([]Squeeze, 15),
+		SqueezeCount:    size,
+		Squeeze:         make([]Squeeze, size),
 	}
 }
 

@@ -6,9 +6,9 @@ import (
 )
 
 type MovingAverage struct {
-	Souce  Source // Default: close
-	Length int
-	Values []float64 // 0 where no value can be calculated
+	Souce   Source // Default: close
+	Length  int
+	Average []float64 // 0 where no value can be calculated
 }
 
 // Creates a new instance of MovingAverage data structure.
@@ -19,9 +19,9 @@ type MovingAverage struct {
 // with the Calculate function.
 func NewMovingAverage(length int) *MovingAverage {
 	return &MovingAverage{
-		Souce:  Close,
-		Length: length,
-		Values: []float64{},
+		Souce:   Close,
+		Length:  length,
+		Average: []float64{},
 	}
 }
 
@@ -35,7 +35,7 @@ func NewMovingAverage(length int) *MovingAverage {
 // WIP: The calculation does not change based on the source value.
 func (ma *MovingAverage) Calculate(bars []Bar) {
 	// Reset values
-	ma.Values = []float64{}
+	ma.Average = []float64{}
 
 	// Storing working sum
 	var sum float64 = 0.0
@@ -45,7 +45,7 @@ func (ma *MovingAverage) Calculate(bars []Bar) {
 	// since no value can be calculated yet.
 	for i := 0; i < ma.Length; i++ {
 		sum += bars[i].Close
-		ma.Values = append(ma.Values, 0.0)
+		ma.Average = append(ma.Average, 0.0)
 	}
 
 	// Fill the values starting at the length of the slice.
@@ -56,7 +56,7 @@ func (ma *MovingAverage) Calculate(bars []Bar) {
 		sum += bars[i].Close
 		sum -= bars[i-ma.Length].Close
 
-		ma.Values = append(ma.Values, (sum / float64(ma.Length)))
+		ma.Average = append(ma.Average, (sum / float64(ma.Length)))
 	}
 }
 
@@ -66,7 +66,7 @@ func (ma *MovingAverage) Calculate(bars []Bar) {
 func (ma *MovingAverage) String() string {
 	var values []string
 
-	for _, value := range ma.Values {
+	for _, value := range ma.Average {
 		values = append(values, fmt.Sprintf("%f", value))
 	}
 
@@ -81,7 +81,7 @@ func (ma *MovingAverage) StringFixed(precision int) string {
 	var values []string
 
 	var format string = fmt.Sprintf("%%.%df", precision)
-	for _, value := range ma.Values {
+	for _, value := range ma.Average {
 		values = append(values, fmt.Sprintf(format, value))
 	}
 
