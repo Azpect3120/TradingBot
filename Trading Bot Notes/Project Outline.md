@@ -19,6 +19,7 @@
 ### Store stocks that fit into a certain criteria
 - Good squeeze
 - MA relation
+- Swing highs and lows (based on Spagheti's code)
 - Price (> 5)
 - Volume (> 2M)
 - Market cap (>= 10B)

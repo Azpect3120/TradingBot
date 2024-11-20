@@ -1,0 +1,11 @@
+github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/markcheno/go-quote v0.0.0-20240929161446-cb6fe2a2e6f8 h1:xjHmqImiMRzNrbkazP9e+EyplWAk36Gfza1IeLag72g=
+github.com/markcheno/go-quote v0.0.0-20240929161446-cb6fe2a2e6f8/go.mod h1:XkWzl73UMsPUypTth1MHbTnSW6ydpD5qHdearJq3eaI=
+github.com/piquette/finance-go v1.1.0 h1:3J5VBP6aPhvrj9Eg6Eus8eM6QJlX4l/wCfrJhONjS3k=
+github.com/piquette/finance-go v1.1.0/go.mod h1:jaHaD5JJEWpl5mW712M8gRboc2xvhjshF3lqw/ke7AA=
+github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/shoenig/yahoo-finance v0.0.2 h1:fs1awTOtBCZqhUpZD1PCt1U7vED2GgEl4Y+fEEXDxQw=
+github.com/shoenig/yahoo-finance v0.0.2/go.mod h1:+3HosP3RGMee+5DGUot4T6c66WZi3mmNW4xEJFAtSyQ=
+github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24 h1:pntxY8Ary0t43dCZ5dqY4YTJCObLY1kIXl0uzMv+7DE=
+github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24/go.mod h1:M+9NzErvs504Cn4c5DxATwIqPbtswREoFCre64PpcG4=
+github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
