@@ -14,7 +14,7 @@ func main() {
 	start := end.Add(-500 * time.Hour)
 
 	params := &chart.Params{
-		Symbol:     "SU",
+		Symbol:     "GME",
 		Interval:   datetime.OneHour,
 		IncludeExt: false,
 		Start:      datetime.New(&start),
@@ -51,7 +51,12 @@ func main() {
 	// 	fmt.Printf("[%d] %s\n", I, bar.Timestamp.Format("2006-01-02 15:04:05"))
 	// }
 
-	sqz := api.NewSqueezePro()
-	sqz.Calculate(bars)
-	print(sqz.String())
+	// sqz := api.NewSqueezePro()
+	// sqz.Calculate(bars)
+	// print(sqz.String())
+
+	ma := api.NewMovingAverage(50)
+	ma.Calculate(bars)
+	println(ma.String())
+	println(ma.StringFixed(2))
 }

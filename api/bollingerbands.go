@@ -44,7 +44,7 @@ func (bb *BollingerBands) Calculate(bars []Bar) {
 	)
 
 	// Calculate sum of the bars
-	for _, bar := range bars[len(bars)-(bb.Length) : len(bars)] {
+	for _, bar := range bars[len(bars)-(bb.Length):] {
 		sum += bar.Close
 	}
 
@@ -53,7 +53,7 @@ func (bb *BollingerBands) Calculate(bars []Bar) {
 	bb.Basis = avg
 
 	// Calculate variance sum of the bars
-	for _, bar := range bars[len(bars)-(bb.Length) : len(bars)] {
+	for _, bar := range bars[len(bars)-(bb.Length):] {
 		varianceSum += math.Pow(bar.Close-avg, 2)
 	}
 

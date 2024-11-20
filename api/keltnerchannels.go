@@ -46,7 +46,7 @@ func (kc *KeltnerChannels) Calculate(bars []Bar) {
 
 	// Calculate sum of the bars ATR
 	var lastBar Bar = bars[len(bars)-(kc.Length)-1]
-	for _, bar := range bars[len(bars)-(kc.Length) : len(bars)] {
+	for _, bar := range bars[len(bars)-(kc.Length):] {
 		sum += bar.Close
 
 		var TR float64 = math.Max(bar.High-bar.Low, math.Max(math.Abs(bar.High-lastBar.Close), math.Abs(bar.Low-lastBar.Close)))

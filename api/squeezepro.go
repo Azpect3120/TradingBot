@@ -125,6 +125,8 @@ func (sqz *SqueezePro) String() string {
 	return strings.Join(result, ",  ")
 }
 
+// Set the squeeze count for the SqueezePro structure.
+// This is required to set the size of the Squeeze array.
 func (sqz *SqueezePro) SetSqueezeCount(n int) {
 	sqz.SqueezeCount = n
 	sqz.Squeeze = make([]Squeeze, n)
