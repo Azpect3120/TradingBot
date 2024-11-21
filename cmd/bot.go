@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/Azpect3120/TradingBot/api"
 	"github.com/Azpect3120/TradingBot/internal/util"
 )
@@ -18,7 +16,10 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("%s: %s\n", row, api.CalculateRating(row, bars))
+		bars = bars[:len(bars)-1]
+
+		print(row, ": ")
+		api.CalculateRating(row, bars)
 	}
 
 }

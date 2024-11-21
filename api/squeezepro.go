@@ -1,6 +1,9 @@
 package api
 
-import "strings"
+import (
+	"slices"
+	"strings"
+)
 
 type SqueezePro struct {
 	Length          int // Default: 14
@@ -26,6 +29,7 @@ const (
 	SqueezeNarrow     Squeeze = "Narrow"
 	SqueezeVeryNarrow Squeeze = "VeryNarrow"
 	SqueezeNone       Squeeze = "None"
+	SqueezeUnknown    Squeeze = "Unknown"
 )
 
 // Creates a new instance of SqueezePro data structure.
@@ -53,12 +57,22 @@ func NewSqueezePro(size int) *SqueezePro {
 // The calculation is based on the length and thresholds
 // values in the called structure. The BollingerBands and
 // KeltnerChannels structures are also calculated for use
-// in the squeeze pro calculation.
+// in the squeeze pro calculation. These are stored in
+// the same order as the bars! They can be accessed using
+// the same index as the provided bar and the value will
+// represent the squeeze at that bar.
 func (sqz *SqueezePro) Calculate(bars []Bar) {
 	// N is based on the SqueezeCount value
 	for n := 0; n < sqz.SqueezeCount; n++ {
 		if n != 0 {
 			bars = bars[:len(bars)-1]
+		}
+
+		// Ensure the bars are large enough to calculate the squeeze,
+		// otherwise skip the calculation.
+		if (len(bars) - sqz.KeltnerChannels.Length) <= 0 {
+			sqz.Squeeze[n] = SqueezeUnknown
+			continue
 		}
 
 		// Calculate the BB values
@@ -99,6 +113,9 @@ func (sqz *SqueezePro) Calculate(bars []Bar) {
 		// No Squeeze
 		sqz.Squeeze[n] = SqueezeNone
 	}
+
+	// Reverse the Squeeze array
+	slices.Reverse(sqz.Squeeze)
 }
 
 // Return the string representation of the SqueezePro data.
@@ -119,6 +136,8 @@ func (sqz *SqueezePro) String() string {
 			result = append(result, "Wide (orange)")
 		case SqueezeNone:
 			result = append(result, "None (green)")
+		case SqueezeUnknown:
+			result = append(result, "Unknown (black)")
 		}
 	}
 

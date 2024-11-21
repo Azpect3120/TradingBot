@@ -19,7 +19,7 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	}
 
 	// Create SqueezePro instance and calculate squeeze
-	sqz := NewSqueezePro(24)
+	sqz := NewSqueezePro(len(bars))
 	sqz.Calculate(bars)
 
 	println(sqz.String())
