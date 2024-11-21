@@ -190,10 +190,113 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	}
 
 	// Calculate the 50HMA increasing or decreasing: checks off g
-
 	i = 0
 	var score int = 0
 	for i < 5 {
+		end := ma.Average[len(ma.Average)-(7*i)-1]
+		start := ma.Average[len(ma.Average)-(7*(i+1))]
+
+		if end > start {
+			score++
+		}
+		if end < start {
+			score--
+		}
+
+		i++
+	}
+
+	// Checks off g
+	if score > 0 {
+		rating.LongScore += float64(score) * 0.5
+	} else {
+		rating.ShortScore += float64(-score) * 0.5
+	}
+
+	// Calculate score for the 9HMA
+	ma.Length = 9
+	ma.Calculate(bars)
+
+	// Check relation to the 9HMA on most recent bar: Checks off a and b
+	if ma.Average[len(ma.Average)-1] > bars[len(bars)-1].Close {
+		rating.ShortScore += 3
+		rating.LongScore -= 2
+	}
+	if ma.Average[len(ma.Average)-1] < bars[len(bars)-1].Close {
+		rating.ShortScore -= 2
+		rating.LongScore += 3
+	}
+
+	// Check if price has crossed the 9HMA: Checks off c and d
+	for i := len(bars) - 1; i >= len(bars)-7; i-- {
+		// Cross was found. Now must determine which direction.
+		// To do this, check if the crossing bar is higher than the 50HMA,
+		// if so, the cross was up, and vise versa. Each crossing is scored.
+		// This seems to make the most sense as a cross up and then down will
+		// cancel out, which is the desired result for a neutral score.
+		// This one only checks for crossing on green bars
+		if bars[i].Close > ma.Average[i] && bars[i].Open < ma.Average[i] {
+			if bars[i].Close > ma.Average[i] {
+				rating.LongScore += 2
+				rating.ShortScore -= 2
+			}
+			if bars[i].Close < ma.Average[i] {
+				rating.LongScore -= 2
+				rating.ShortScore += 2
+			}
+		}
+
+		// This one only checks for crossing on red bars
+		if bars[i].Close < ma.Average[i] && bars[i].Open > ma.Average[i] {
+			if bars[i].Close > ma.Average[i] {
+				rating.LongScore += 2
+				rating.ShortScore -= 2
+			}
+			if bars[i].Close < ma.Average[i] {
+				rating.LongScore -= 2
+				rating.ShortScore += 2
+			}
+		}
+	}
+
+	// Calculate is the 9HMA is between the highs and lows of the past 7 candles
+	// Checks off e (long) and e (short)
+	low, high = math.MaxFloat64, 0.0
+	for i := len(bars) - 1; i >= len(bars)-7; i-- {
+		low = math.Min(low, bars[i].Low)
+		high = math.Max(high, bars[i].High)
+	}
+	if ma.Average[len(ma.Average)-1] > low && ma.Average[len(ma.Average)-1] < high {
+		rating.LongScore += 2
+		rating.ShortScore += 2
+	}
+
+	// Calculate the duration above the 9HMA: checks off f (long)
+	// Cannot run when the MA is 0, if the 50 is not calculated
+	i = len(bars) - 1
+	count = 0
+	for bars[i].Close > ma.Average[i] && ma.Average[i] > 0 {
+		count++
+		i--
+	}
+	points = int(math.Min(float64(count/7), 3.0))
+	rating.LongScore += float64(points) * 0.5
+
+	// Calculate the duration below the 9HMA: checks off f (short)
+	// Cannot run when the MA is 0, if the 50 is not calculated
+	i = len(bars) - 1
+	count = 0
+	for bars[i].Close < ma.Average[i] && ma.Average[i] > 0 {
+		count++
+		i--
+	}
+	points = int(math.Min(float64(count/7), 3.0))
+	rating.ShortScore += float64(points) * 0.5
+
+	// Calculate the 50HMA increasing or decreasing: checks off g
+	i = 0
+	score = 0
+	for i < 3 {
 		end := ma.Average[len(ma.Average)-(7*i)-1]
 		start := ma.Average[len(ma.Average)-(7*(i+1))]
 
