@@ -11,15 +11,23 @@ func main() {
 		panic(err)
 	}
 
-	for _, row := range rows[:5] {
+	for _, row := range rows {
 		bars, err := util.GetBars(row, 500)
 		if err != nil {
-			panic(err)
+			// Failed on these names: need to find a fix
+			// BRK/A: changed to BRK-A
+			// BRK/B: changed to BRK-B
+			println(err.Error(), row)
+			continue
+		}
+		if len(bars) == 0 {
+			println("No bars found for ", row)
+			continue
 		}
 		bars = bars[:len(bars)-1]
 
-		print(row, ": ")
 		api.CalculateRating(row, bars)
+		println("Rating ", row)
 	}
 
 }

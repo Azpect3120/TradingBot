@@ -22,7 +22,20 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	sqz := NewSqueezePro(len(bars))
 	sqz.Calculate(bars)
 
-	println(sqz.String())
+	// Generate score for recent squeeze
+	switch sqz.Squeeze[len(sqz.Squeeze)-1] {
+	case SqueezeVeryNarrow:
+		rating.Score += 15
+	case SqueezeNarrow:
+		rating.Score += 10
+	case SqueezeNormal:
+		rating.Score += 5
+	case SqueezeWide:
+		rating.Score += 2.5
+	case SqueezeNone, SqueezeUnknown:
+		rating.Score += 0
+		return rating // Failed case
+	}
 
 	return rating
 }
