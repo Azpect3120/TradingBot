@@ -39,6 +39,7 @@ WIP:
         6. Squeeze continuation >= wide(per 7):  +0.75 point(s) (max 7.5) *cannot be just wide squeezes, if they're all wide, then the current 7 is 0 and the calculation is halted*
         7. Squeeze is increasing (last 7):       +5    points 
         8. Squeeze is decreasing (last 7):       -5    points
+        9. Squeeze is constant (last 7):         +2.5  points
 
 3. The 50 hour moving average. (15 possible points)
 
@@ -49,7 +50,7 @@ WIP:
         4. Price has crossed dn 50H MA (past 7): -2.5 points
         5. Price has been above 50H MA (per 7):  +0.5 point(s) (max 2.5)
         6. 50H MA is below lows of (past 21):    +2.5 points
-        7. 50H MA is increasing (part 7):        +0.5 point(s) (max 2.5)
+        7. 50H MA is increasing (per 7):         +0.5 point(s) (max 2.5)
 
     - For short positions:
         1. Price is above 50H MA (most recent):  -2.5 points
@@ -58,7 +59,7 @@ WIP:
         4. Price has crossed dn 50H MA (past 7): +2.5 points
         5. Price has been bellow 50H MA (per 7): +0.5 point(s) (max 2.5)
         6. 50H MA is above highs of (past 21):   +2.5 points
-        7. 50H MA is decreasing (part 7):        +0.5 point(s) (max 2.5)
+        7. 50H MA is decreasing (per 7):         +0.5 point(s) (max 2.5)
 
 4. The 9 hour moving average. (10 possible points)
 

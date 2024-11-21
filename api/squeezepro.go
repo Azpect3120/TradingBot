@@ -21,15 +21,15 @@ type Thresholds struct {
 	VeryNarrow float64 // Default: 0.75
 }
 
-type Squeeze string
+type Squeeze int
 
 const (
-	SqueezeWide       Squeeze = "Wide"
-	SqueezeNormal     Squeeze = "Normal"
-	SqueezeNarrow     Squeeze = "Narrow"
-	SqueezeVeryNarrow Squeeze = "VeryNarrow"
-	SqueezeNone       Squeeze = "None"
-	SqueezeUnknown    Squeeze = "Unknown"
+	SqueezeUnknown    Squeeze = 0
+	SqueezeNone       Squeeze = 1
+	SqueezeWide       Squeeze = 2
+	SqueezeNormal     Squeeze = 3
+	SqueezeNarrow     Squeeze = 4
+	SqueezeVeryNarrow Squeeze = 5
 )
 
 // Creates a new instance of SqueezePro data structure.
