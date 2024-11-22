@@ -30,8 +30,8 @@ func main() {
 		}
 		bars = bars[:len(bars)-1]
 
-		rating := api.CalculateRating(*symbol, bars)
-		fmt.Printf("Rating %s Long: %0.2f Short: %0.2f\n", *symbol, rating.LongScore, rating.ShortScore)
+		report := api.GenerateReport(*symbol, bars)
+		fmt.Println(report.String())
 
 		os.Exit(0)
 	}
@@ -65,9 +65,9 @@ func main() {
 			}
 			bars = bars[:len(bars)-1]
 
-			rating := api.CalculateRating(row, bars)
-			if rating.LongScore >= 50 || rating.ShortScore >= 50 {
-				fmt.Printf("Rating %s Long: %0.2f Short: %0.2f\n", row, rating.LongScore, rating.ShortScore)
+			report := api.GenerateReport(row, bars)
+			if report.Rating.LongScore >= 50 || report.Rating.ShortScore >= 50 {
+				fmt.Println(report.String())
 			}
 		}
 		os.Exit(0)
@@ -100,13 +100,13 @@ func CalculateDistribution(rows []string, lookback int) int {
 		}
 		bars = bars[:len(bars)-1]
 
-		rating := api.CalculateRating(row, bars)
-		if rating.LongScore >= 0 {
-			results_long[int(rating.LongScore/10)]++
-		}
-		if rating.LongScore >= 0 {
-			results_short[int(rating.ShortScore/10)]++
-		}
+		api.GenerateReport(row, bars)
+		// if rating.LongScore >= 0 {
+		// 	results_long[int(rating.LongScore/10)]++
+		// }
+		// if rating.LongScore >= 0 {
+		// 	results_short[int(rating.ShortScore/10)]++
+		// }
 
 		fmt.Printf("\rCalculating rating for $%-5s", row)
 	}

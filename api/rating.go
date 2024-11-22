@@ -16,15 +16,20 @@ type Rating struct {
 // found described in the function. The symbol passed into the
 // function has no relevance, it is just for use in reporting
 // later.
-func CalculateRating(symbol string, bars []Bar) *Rating {
+func GenerateReport(symbol string, bars []Bar) *Report {
 	rating := &Rating{
 		score:  0.0,
 		Symbol: symbol,
 	}
 
+	report := NewReport(symbol, rating)
+
 	// Create SqueezePro instance and calculate squeeze
 	sqz := NewSqueezePro(len(bars))
 	sqz.Calculate(bars)
+
+	// Set the squeeze value in the report
+	report.Squeeze = sqz.Squeeze[len(sqz.Squeeze)-1]
 
 	// Generate score for recent squeeze
 	switch sqz.Squeeze[len(sqz.Squeeze)-1] {
@@ -38,7 +43,7 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 		rating.score += 2.5
 	case SqueezeNone, SqueezeUnknown:
 		rating.score += 0
-		return rating // Failed case
+		return report // Failed case
 	}
 
 	// Calculate score for the historical squeeze
@@ -47,6 +52,10 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	// Checks off a, b, c, d, and e
 	var veryNarrow, narrow, normal, wide int = 0, 0, 0, 0
 	for i := len(sqz.Squeeze) - 1; i >= len(sqz.Squeeze)-14; i-- {
+		// Add squeeze to report
+		report.SqueezeHistory = append(report.SqueezeHistory, sqz.Squeeze[i])
+
+		// Calculate the score
 		switch sqz.Squeeze[i] {
 		case SqueezeVeryNarrow:
 			if veryNarrow < 5 {
@@ -83,19 +92,25 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	var points int = int(math.Min(float64(count/7), 10.0))
 	rating.score += float64(points) * 0.75
 
+	// Add squeeze duration to the report
+	report.SqueezeLength = count
+
 	// Calculate if the squeeze is increasing: checks off g
 	if sqz.Squeeze[len(sqz.Squeeze)-8] < sqz.Squeeze[len(sqz.Squeeze)-1] {
 		rating.score += 5
+		report.SqueezeIncrease = true
 	}
 
 	// Calculate if the squeeze is decreasing: checks off h
 	if sqz.Squeeze[len(sqz.Squeeze)-8] > sqz.Squeeze[len(sqz.Squeeze)-1] {
 		rating.score -= 5
+		report.SqueezeDecrease = true
 	}
 
 	// Calculate if the squeeze is constant: checks off i
 	if sqz.Squeeze[len(sqz.Squeeze)-8] == sqz.Squeeze[len(sqz.Squeeze)-1] {
 		rating.score += 2.5
+		report.SqueezeConstant = true
 	}
 
 	// Set both scores to the same value
@@ -110,10 +125,12 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	if ma.Average[len(ma.Average)-1] > bars[len(bars)-1].Close {
 		rating.ShortScore += 5
 		rating.LongScore -= 2.5
+		report.MA50Relation = RelationBelow
 	}
 	if ma.Average[len(ma.Average)-1] < bars[len(bars)-1].Close {
 		rating.ShortScore -= 2.5
 		rating.LongScore += 5
+		report.MA50Relation = RelationAbove
 	}
 
 	// Check if price has crossed the 50HMA: Checks off c and d
@@ -128,10 +145,18 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 			if bars[i].Close > ma.Average[i] {
 				rating.LongScore += 2.5
 				rating.ShortScore -= 2.5
+
+				if report.MA50CrossRelation == RelationNone {
+					report.MA50CrossRelation = RelationAbove
+				}
 			}
 			if bars[i].Close < ma.Average[i] {
 				rating.LongScore -= 2.5
 				rating.ShortScore += 2.5
+
+				if report.MA50CrossRelation == RelationNone {
+					report.MA50CrossRelation = RelationBelow
+				}
 			}
 		}
 
@@ -140,10 +165,18 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 			if bars[i].Close > ma.Average[i] {
 				rating.LongScore += 2.5
 				rating.ShortScore -= 2.5
+
+				if report.MA50CrossRelation == RelationNone {
+					report.MA50CrossRelation = RelationAbove
+				}
 			}
 			if bars[i].Close < ma.Average[i] {
 				rating.LongScore -= 2.5
 				rating.ShortScore += 2.5
+
+				if report.MA50CrossRelation == RelationNone {
+					report.MA50CrossRelation = RelationBelow
+				}
 			}
 		}
 	}
@@ -159,6 +192,9 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	points = int(math.Min(float64(count/7), 5.0))
 	rating.LongScore += float64(points) * 0.5
 
+	// Add the duration above the 50HMA to the report
+	report.MA50AboveLength = count
+
 	// Calculate the duration below the 50HMA: checks off e (short)
 	// Cannot run when the MA is 0, if the 50 is not calculated
 	i = len(bars) - 1
@@ -169,6 +205,9 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	}
 	points = int(math.Min(float64(count/7), 5.0))
 	rating.ShortScore += float64(points) * 0.5
+
+	// Add the duration below the 50HMA to the report
+	report.MA50BelowLength = count
 
 	// Calculate 50HMA relation to 21H low/high: checks off f
 	// Find low and high of the last 21 bars, based on low and high
@@ -182,11 +221,13 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	// Checks off f (short)
 	if ma.Average[len(ma.Average)-1] > high {
 		rating.ShortScore += 2.5
+		report.MA50AboveHigh = true
 	}
 
 	// Checks off f (long)
 	if ma.Average[len(ma.Average)-1] < low {
 		rating.LongScore += 2.5
+		report.MA50BelowLow = true
 	}
 
 	// Calculate the 50HMA increasing or decreasing: checks off g
@@ -209,8 +250,10 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	// Checks off g
 	if score > 0 {
 		rating.LongScore += float64(score) * 0.5
+		report.MA50Increasing = true
 	} else {
 		rating.ShortScore += float64(-score) * 0.5
+		report.MA50Decreasing = true
 	}
 
 	// Calculate score for the 9HMA
@@ -221,10 +264,12 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	if ma.Average[len(ma.Average)-1] > bars[len(bars)-1].Close {
 		rating.ShortScore += 3
 		rating.LongScore -= 2
+		report.MA9Relation = RelationBelow
 	}
 	if ma.Average[len(ma.Average)-1] < bars[len(bars)-1].Close {
 		rating.ShortScore -= 2
 		rating.LongScore += 3
+		report.MA9Relation = RelationAbove
 	}
 
 	// Check if price has crossed the 9HMA: Checks off c and d
@@ -239,10 +284,18 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 			if bars[i].Close > ma.Average[i] {
 				rating.LongScore += 2
 				rating.ShortScore -= 2
+
+				if report.MA9CrossRelation == RelationNone {
+					report.MA9CrossRelation = RelationAbove
+				}
 			}
 			if bars[i].Close < ma.Average[i] {
 				rating.LongScore -= 2
 				rating.ShortScore += 2
+
+				if report.MA9CrossRelation == RelationNone {
+					report.MA9CrossRelation = RelationBelow
+				}
 			}
 		}
 
@@ -251,10 +304,18 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 			if bars[i].Close > ma.Average[i] {
 				rating.LongScore += 2
 				rating.ShortScore -= 2
+
+				if report.MA9CrossRelation == RelationNone {
+					report.MA9CrossRelation = RelationAbove
+				}
 			}
 			if bars[i].Close < ma.Average[i] {
 				rating.LongScore -= 2
 				rating.ShortScore += 2
+
+				if report.MA9CrossRelation == RelationNone {
+					report.MA9CrossRelation = RelationBelow
+				}
 			}
 		}
 	}
@@ -269,6 +330,7 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	if ma.Average[len(ma.Average)-1] > low && ma.Average[len(ma.Average)-1] < high {
 		rating.LongScore += 2
 		rating.ShortScore += 2
+		report.MA9BetweenHighLow = true
 	}
 
 	// Calculate the duration above the 9HMA: checks off f (long)
@@ -282,6 +344,9 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	points = int(math.Min(float64(count/7), 3.0))
 	rating.LongScore += float64(points) * 0.5
 
+	// Add the duration above the 9HMA to the report
+	report.MA9AboveLength = count
+
 	// Calculate the duration below the 9HMA: checks off f (short)
 	// Cannot run when the MA is 0, if the 50 is not calculated
 	i = len(bars) - 1
@@ -292,6 +357,9 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	}
 	points = int(math.Min(float64(count/7), 3.0))
 	rating.ShortScore += float64(points) * 0.5
+
+	// Add the duration below the 9HMA to the report
+	report.MA9BelowLength = count
 
 	// Calculate the 50HMA increasing or decreasing: checks off g
 	i = 0
@@ -313,11 +381,20 @@ func CalculateRating(symbol string, bars []Bar) *Rating {
 	// Checks off g
 	if score > 0 {
 		rating.LongScore += float64(score) * 0.5
+		report.MA9Increasing = true
 	} else {
 		rating.ShortScore += float64(-score) * 0.5
+		report.MA9Decreasing = true
 	}
 
-	return rating
+	// Determine the direction of the report
+	if rating.LongScore > rating.ShortScore {
+		report.Direction = DirectionLong
+	} else {
+		report.Direction = DirectionShort
+	}
+
+	return report
 }
 
 // Return the string representation of the rating.
