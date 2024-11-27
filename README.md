@@ -1,4 +1,4 @@
-# Azpect's Trading Bot
+# Walley, A Trading Bot
 
 
 ## How is the Rating Calculated
