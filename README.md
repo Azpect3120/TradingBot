@@ -1,18 +1,44 @@
 # Walley, A Trading Bot
 
+## Indicators Used
+
+### Moving Averages
+
+- **9 Hour Moving Average:** The average price of the last 9 candles.
+- **50 Hour Moving Average:** The average price of the last 50 candles.
+
+### Bollingers Bands
+
+- **Upper Bound:** Basis added to the standard deviation times the multiplier (default 2).
+- **Basis:** The average of the last 14 candles.
+- **Lower Bound:** Basis minus the standard deviation times the multiplier (default 2).
+
+### Keltner Channels
+
+- **Upper Bound:** Basis added to the average true range times the multiplier (default 2).
+- **Basis:** The average of the last 14 candles.
+- **Lower Bound:** Basis minus the average true range times the multiplier (default 2).
+
+### Squeeze Pros
+
+- **No Squeeze (green dots):** Bollinger bands are not inside the keltner channels with any of the defined multipliers.
+- **Wide Squeeze (orange dots):** When the bollinger bands are inside the keltner channels (with a 1.8 multiplier).
+- **Normal Squeeze (red dots):** When the bollinger bands are inside the keltner channels (with a 1.25 multiplier).
+- **Tight Squeeze (yellow dots):** When the bollinger bands are inside the keltner channels (with a 0.9 multiplier).
+- **Ultra Tight Squeeze (blue dots):** When the bollinger bands are inside the keltner channels (with a 0.75 multiplier).
 
 ## How is the Rating Calculated
 
-Squeeze is generated using JHF's SqueezePro indicator:
-
-`explain the squeeze formula here`
-
-
 Rating is scored out of 100 points.
+
 Current Squeeze: 15/100
+
 Past squeeze: 60/100
+
 50H MA: 15/100
+
 9H MA: 10/100
+
 
 Total: 100/100
 
