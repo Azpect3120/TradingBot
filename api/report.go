@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"strconv"
 	"strings"
 	"text/template"
 )
@@ -53,19 +54,37 @@ type Report struct {
 	MA9BetweenHighLow bool     // 9 MA is between the high and low (past 21 bars)
 	MA9AboveLength    int      // 9 MA is above the high for this many bars
 	MA9BelowLength    int      // 9 MA is below the low for this many bars
+
+	// Not included in calculation of the report.
+	// Just for reference in the display.
+	Price         float64 // Last sale price
+	NetChange     float64 // Net change
+	PercentChange float64 // Percent change
+	Volume        int     // Can't decide if this should be a factor
+	Sector        string  // Sector of the stock
+	MarketCap     float64 // Market cap of the stock
 }
 
 // Create a new report variable with the given symbol and rating.
 // When the rating is changed, the report will be updated. SqueezeHistory
 // is initialized as an empty slice, values should be appended to it.
 // The first value will be the most recent squeeze.
-func NewReport(symbol string, rating *Rating) *Report {
+func NewReport(ticker *Ticker, rating *Rating) *Report {
+	price, _ := strconv.ParseFloat(strings.Replace(ticker.LastSale, "$", "", -1), 64)
+	netChange, _ := strconv.ParseFloat(ticker.NetChange, 64)
+	percentChange, _ := strconv.ParseFloat(strings.Replace(ticker.PCTChange, "%", "", -1), 64)
+	marketCap, _ := strconv.ParseFloat(ticker.MarketCap, 64)
 	return &Report{
-		Symbol:            symbol,
+		Symbol:            ticker.Symbol,
 		Rating:            rating,
 		SqueezeHistory:    []Squeeze{},
 		MA9CrossRelation:  RelationNone,
 		MA50CrossRelation: RelationNone,
+		Price:             price,
+		NetChange:         netChange,
+		PercentChange:     percentChange,
+		Sector:            ticker.Sector,
+		MarketCap:         marketCap,
 	}
 }
 

@@ -1,0 +1,225 @@
+
+  -----------------------------------
+  | Report for $CART
+  | ---------------------------------
+  | Direction: LONG
+  | Rating: 72.5/100
+  | ---------------------------------
+  | Last Squeeze   : VERY TIGHT
+  | Past Squeeze   : VVVTTTTNTTNNNN
+  | Squeeze Length : 15
+  | Squeeze Status : Tightening
+  | 
+  | Price to 50MA    : Above
+  | Price cross 50MA : --
+  | 50MA Direction   : Increasing
+  | 50MA Below Low   : Yes
+  | 50MA Above Bars  : 26
+  | 
+  | Price to 9MA     : Above
+  | Price cross 9MA  : Up
+  | 9MA Direction    : Increasing
+  | 9MA Between H/L  : Yes
+  | 9MA Above Bars   : 1
+  -----------------------------------
+
+
+  -----------------------------------
+  | Report for $DKNG
+  | ---------------------------------
+  | Direction: LONG
+  | Rating: 50.25/100
+  | ---------------------------------
+  | Last Squeeze   : TIGHT
+  | Past Squeeze   : TTTTTTVTTNWW--
+  | Squeeze Length : 12
+  | Squeeze Status : Constant
+  | 
+  | Price to 50MA    : Above
+  | Price cross 50MA : Up
+  | 50MA Direction   : Increasing
+  | 50MA Below Low   : No
+  | 50MA Above Bars  : 1
+  | 
+  | Price to 9MA     : Above
+  | Price cross 9MA  : Up
+  | 9MA Direction    : Decreasing
+  | 9MA Between H/L  : Yes
+  | 9MA Above Bars   : 1
+  -----------------------------------
+
+
+  -----------------------------------
+  | Report for $JKHY
+  | ---------------------------------
+  | Direction: LONG
+  | Rating: 55.5/100
+  | ---------------------------------
+  | Last Squeeze   : NORMAL
+  | Past Squeeze   : NTVVVVVTTTTNNV
+  | Squeeze Length : 17
+  | Squeeze Status : Loosening
+  | 
+  | Price to 50MA    : Above
+  | Price cross 50MA : --
+  | 50MA Direction   : Decreasing
+  | 50MA Below Low   : No
+  | 50MA Above Bars  : 11
+  | 
+  | Price to 9MA     : Above
+  | Price cross 9MA  : Up
+  | 9MA Direction    : Increasing
+  | 9MA Between H/L  : Yes
+  | 9MA Above Bars   : 2
+  -----------------------------------
+
+
+  -----------------------------------
+  | Report for $K
+  | ---------------------------------
+  | Direction: LONG
+  | Rating: 67/100
+  | ---------------------------------
+  | Last Squeeze   : VERY TIGHT
+  | Past Squeeze   : VVTTTTTNNNNNNN
+  | Squeeze Length : 17
+  | Squeeze Status : Tightening
+  | 
+  | Price to 50MA    : Above
+  | Price cross 50MA : --
+  | 50MA Direction   : Decreasing
+  | 50MA Below Low   : No
+  | 50MA Above Bars  : 28
+  | 
+  | Price to 9MA     : Above
+  | Price cross 9MA  : Up
+  | 9MA Direction    : Increasing
+  | 9MA Between H/L  : Yes
+  | 9MA Above Bars   : 1
+  -----------------------------------
+
+
+  -----------------------------------
+  | Report for $NTNX
+  | ---------------------------------
+  | Direction: LONG
+  | Rating: 50.75/100
+  | ---------------------------------
+  | Last Squeeze   : VERY TIGHT
+  | Past Squeeze   : VVVVVVVVWW----
+  | Squeeze Length : 10
+  | Squeeze Status : Constant
+  | 
+  | Price to 50MA    : Above
+  | Price cross 50MA : --
+  | 50MA Direction   : Increasing
+  | 50MA Below Low   : Yes
+  | 50MA Above Bars  : 28
+  | 
+  | Price to 9MA     : Below
+  | Price cross 9MA  : Down
+  | 9MA Direction    : Increasing
+  | 9MA Between H/L  : Yes
+  | 9MA Above Bars   : 0
+  -----------------------------------
+
+
+  -----------------------------------
+  | Report for $OWL
+  | ---------------------------------
+  | Direction: LONG
+  | Rating: 56/100
+  | ---------------------------------
+  | Last Squeeze   : VERY TIGHT
+  | Past Squeeze   : VTNNNNWNNNNNVT
+  | Squeeze Length : 15
+  | Squeeze Status : Tightening
+  | 
+  | Price to 50MA    : Above
+  | Price cross 50MA : --
+  | 50MA Direction   : Increasing
+  | 50MA Below Low   : Yes
+  | 50MA Above Bars  : 48
+  | 
+  | Price to 9MA     : Below
+  | Price cross 9MA  : Down
+  | 9MA Direction    : Increasing
+  | 9MA Between H/L  : Yes
+  | 9MA Above Bars   : 0
+  -----------------------------------
+
+
+  -----------------------------------
+  | Report for $TW
+  | ---------------------------------
+  | Direction: LONG
+  | Rating: 60.5/100
+  | ---------------------------------
+  | Last Squeeze   : NORMAL
+  | Past Squeeze   : NTVVVVTTTTTNNW
+  | Squeeze Length : 29
+  | Squeeze Status : Loosening
+  | 
+  | Price to 50MA    : Above
+  | Price cross 50MA : --
+  | 50MA Direction   : Increasing
+  | 50MA Below Low   : Yes
+  | 50MA Above Bars  : 47
+  | 
+  | Price to 9MA     : Above
+  | Price cross 9MA  : --
+  | 9MA Direction    : Increasing
+  | 9MA Between H/L  : Yes
+  | 9MA Above Bars   : 6
+  -----------------------------------
+
+
+  -----------------------------------
+  | Report for $XEL
+  | ---------------------------------
+  | Direction: LONG
+  | Rating: 54.5/100
+  | ---------------------------------
+  | Last Squeeze   : NORMAL
+  | Past Squeeze   : NTVVVVVVVTNNWW
+  | Squeeze Length : 14
+  | Squeeze Status : Loosening
+  | 
+  | Price to 50MA    : Above
+  | Price cross 50MA : --
+  | 50MA Direction   : Increasing
+  | 50MA Below Low   : Yes
+  | 50MA Above Bars  : 55
+  | 
+  | Price to 9MA     : Above
+  | Price cross 9MA  : Up
+  | 9MA Direction    : Increasing
+  | 9MA Between H/L  : Yes
+  | 9MA Above Bars   : 5
+  -----------------------------------
+
+
+  -----------------------------------
+  | Report for $ZS
+  | ---------------------------------
+  | Direction: LONG
+  | Rating: 65/100
+  | ---------------------------------
+  | Last Squeeze   : TIGHT
+  | Past Squeeze   : TTTVVVTTNNNNNN
+  | Squeeze Length : 15
+  | Squeeze Status : Constant
+  | 
+  | Price to 50MA    : Above
+  | Price cross 50MA : --
+  | 50MA Direction   : Increasing
+  | 50MA Below Low   : Yes
+  | 50MA Above Bars  : 27
+  | 
+  | Price to 9MA     : Above
+  | Price cross 9MA  : Up
+  | 9MA Direction    : Increasing
+  | 9MA Between H/L  : Yes
+  | 9MA Above Bars   : 1
+  -----------------------------------
+

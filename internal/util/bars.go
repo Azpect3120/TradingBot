@@ -18,7 +18,7 @@ import (
 // This function will not clean the bars and remove the final
 // "half bar." That should be done by the caller using basic
 // array manipulation.
-func GetBars(symbol string, hours int) ([]api.Bar, error) {
+func GetBars(symbol string, hours, history int) ([]api.Bar, error) {
 	// Cannot get 0 bars
 	if hours == 0 {
 		return nil, errors.New("Cannot get 0 bars")
@@ -31,7 +31,7 @@ func GetBars(symbol string, hours int) ([]api.Bar, error) {
 	}
 
 	// Calculate time range
-	var end time.Time = time.Now()
+	var end time.Time = time.Now().Add(time.Duration(-24*history) * time.Hour)
 	var start time.Time = end.Add(time.Duration(-hours) * time.Hour)
 
 	params := &chart.Params{

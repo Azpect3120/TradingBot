@@ -2,6 +2,7 @@ package api
 
 import (
 	"math"
+	"strconv"
 )
 
 type Rating struct {
@@ -13,16 +14,23 @@ type Rating struct {
 
 // Calculate the rating based on the bars passed into the
 // function. The rating is based on many measures and can be
-// found described in the function. The symbol passed into the
-// function has no relevance, it is just for use in reporting
-// later.
-func GenerateReport(symbol string, bars []Bar) *Report {
+// found described in the function. The ticker passed into the
+// function is used to fill the report with the necessary
+// information. The report is then returned. Only tickers with
+// a volume greater than 1,000,000 are considered. Only tickers
+// a market cap greater than 10,000,000,000 are considered.
+func GenerateReport(ticker *Ticker, bars []Bar) *Report {
 	rating := &Rating{
 		score:  0.0,
-		Symbol: symbol,
+		Symbol: ticker.Symbol,
 	}
 
-	report := NewReport(symbol, rating)
+	report := NewReport(ticker, rating)
+
+	marketCap, _ := strconv.ParseFloat(ticker.MarketCap, 64)
+	if report.Volume < 1000000 || marketCap < 10000000000.00 {
+		return report
+	}
 
 	// Create SqueezePro instance and calculate squeeze
 	sqz := NewSqueezePro(len(bars))
