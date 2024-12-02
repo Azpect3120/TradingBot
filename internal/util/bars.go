@@ -49,6 +49,9 @@ func GetBars(symbol string, hours, daysBack, hourOffset int) ([]api.Bar, error) 
 	ch := chart.Get(params)
 	for ch.Next() {
 		bar := parseBar(ch)
+		if bar.Open == 0 || bar.Close == 0 || bar.High == 0 || bar.Low == 0 {
+			continue
+		}
 		bars = append(bars, bar)
 	}
 	if err := ch.Err(); err != nil {
