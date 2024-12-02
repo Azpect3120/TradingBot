@@ -15,11 +15,13 @@ func main() {
 	symbol := flag.String("s", "", "Symbol to get data for. Do not use with -f.")
 	lookback := flag.Int("l", 500, "Number of candles to look back.")
 	distribution := flag.Bool("d", false, "Calculate the distribution of ratings. This must be used with -f to provided a list of symbols.")
+	daysBack := flag.Int("b", 0, "Number of days back to look for data.")
+	hourOffset := flag.Int("o", 0, "Number of hours to offset the data by.")
 	flag.Parse()
 
 	// Symbol was provided
 	if *symbol != "" {
-		bars, err := util.GetBars(*symbol, *lookback)
+		bars, err := util.GetBars(*symbol, *lookback, *daysBack, *hourOffset)
 		if err != nil {
 			println(err.Error(), *symbol)
 			os.Exit(1)
@@ -43,7 +45,7 @@ func main() {
 			panic(err)
 		}
 
-		os.Exit(CalculateDistribution(rows, *lookback))
+		os.Exit(CalculateDistribution(rows, *lookback, *daysBack, *hourOffset))
 	}
 
 	// Path was provided and no symbol
@@ -54,7 +56,7 @@ func main() {
 		}
 
 		for _, row := range rows {
-			bars, err := util.GetBars(row, *lookback)
+			bars, err := util.GetBars(row, *lookback, *daysBack, *hourOffset)
 			if err != nil {
 				println(err.Error(), row)
 				continue
@@ -80,7 +82,7 @@ func main() {
 // ratings for the long and short direction. The function will return an
 // int to be used as the exit code. This function will only fail if the
 // API fails somehow.
-func CalculateDistribution(rows []string, lookback int) int {
+func CalculateDistribution(rows []string, lookback, daysBack, hourOffset int) int {
 	// Store the results in an array, the index will store the ratings of
 	// 0-10, 10-20, 20-30, 30-40, 40-50, 50-60, 60-70, 70-80, 80-90, 90-100
 	var results_long [10]int = [10]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -90,7 +92,7 @@ func CalculateDistribution(rows []string, lookback int) int {
 
 	// Calculate the distribution of ratings
 	for _, row := range rows {
-		bars, err := util.GetBars(row, lookback)
+		bars, err := util.GetBars(row, lookback, daysBack, hourOffset)
 		if err != nil {
 			println(err.Error(), row)
 			return 1

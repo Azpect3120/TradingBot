@@ -13,12 +13,13 @@ import (
 // function will return an array of Bar structs for the given
 // symbol and number of hours. The interval will always be hourly
 // since that is the use case and extended hours will be ignored.
-// Hours must not be 0.
+// Hours must not be 0. The daysBack parameter is used to generate
+// historical results.
 //
 // This function will not clean the bars and remove the final
 // "half bar." That should be done by the caller using basic
 // array manipulation.
-func GetBars(symbol string, hours int) ([]api.Bar, error) {
+func GetBars(symbol string, hours, daysBack, hourOffset int) ([]api.Bar, error) {
 	// Cannot get 0 bars
 	if hours == 0 {
 		return nil, errors.New("Cannot get 0 bars")
@@ -31,7 +32,7 @@ func GetBars(symbol string, hours int) ([]api.Bar, error) {
 	}
 
 	// Calculate time range
-	var end time.Time = time.Now()
+	var end time.Time = time.Now().Add(time.Duration(-daysBack)*24*time.Hour + (time.Duration(-hourOffset) * time.Hour))
 	var start time.Time = end.Add(time.Duration(-hours) * time.Hour)
 
 	params := &chart.Params{
