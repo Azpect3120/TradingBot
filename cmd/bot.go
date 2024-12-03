@@ -17,6 +17,7 @@ func main() {
 	distribution := flag.Bool("d", false, "Calculate the distribution of ratings. This must be used with -f to provided a list of symbols.")
 	daysBack := flag.Int("b", 0, "Number of days back to look for data.")
 	hourOffset := flag.Int("o", 0, "Number of hours to offset the data by.")
+	cutoff := flag.Int("c", 50, "Cutoff for the rating to be displayed.")
 	flag.Parse()
 
 	// Symbol was provided
@@ -26,7 +27,7 @@ func main() {
 			println(err.Error(), *symbol)
 			os.Exit(1)
 		}
-		if len(bars) < 50 {
+		if len(bars) < *cutoff {
 			println("Not enough bars were found", *symbol)
 			os.Exit(1)
 		}
@@ -61,14 +62,14 @@ func main() {
 				println(err.Error(), row)
 				continue
 			}
-			if len(bars) < 50 {
+			if len(bars) < *cutoff {
 				println("Not enough bars were found", row)
 				continue
 			}
 			bars = bars[:len(bars)-1]
 
 			report := api.GenerateReport(row, bars)
-			if report.Rating.LongScore >= 50 || report.Rating.ShortScore >= 50 {
+			if report.Rating.LongScore >= float64(*cutoff) || report.Rating.ShortScore >= float64(*cutoff) {
 				fmt.Println(report.String())
 			}
 		}
@@ -102,13 +103,13 @@ func CalculateDistribution(rows []string, lookback, daysBack, hourOffset int) in
 		}
 		bars = bars[:len(bars)-1]
 
-		api.GenerateReport(row, bars)
-		// if rating.LongScore >= 0 {
-		// 	results_long[int(rating.LongScore/10)]++
-		// }
-		// if rating.LongScore >= 0 {
-		// 	results_short[int(rating.ShortScore/10)]++
-		// }
+		report := api.GenerateReport(row, bars)
+		if report.Rating.LongScore >= 0 {
+			results_long[int(report.Rating.LongScore/10)]++
+		}
+		if report.Rating.ShortScore >= 0 {
+			results_short[int(report.Rating.ShortScore/10)]++
+		}
 
 		fmt.Printf("\rCalculating rating for $%-5s", row)
 	}
